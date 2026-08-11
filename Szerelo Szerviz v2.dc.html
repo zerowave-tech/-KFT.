@@ -19,6 +19,11 @@
   a:hover { color:#EDE7DD; }
   html { scroll-behavior:smooth; }
   @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  /* cookie toggle — state driven, cannot be expressed inline */
+  .cookie-toggle { width:34px; height:18px; display:inline-flex; align-items:center; padding:2px; background:rgba(237,231,221,0.35); }
+  .cookie-toggle.is-on { background:#E4551F; }
+  .cookie-toggle-knob { width:14px; height:14px; background:#0E1316; margin-left:0; }
+  .cookie-toggle.is-on .cookie-toggle-knob { margin-left:16px; }
   /* mobile layout — overrides that cannot be expressed inline */
   @media (max-width: 860px) {
     header, section, footer, main { padding-left: 20px !important; padding-right: 20px !important; }
@@ -399,7 +404,7 @@
           Működéshez szükséges cookie-k
         </span>
         <button type="button" onClick="{{ toggleOther }}" style="display:flex;gap:10px;align-items:center;background:none;border:0;padding:0;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:#EDE7DD">
-          <span style="width:34px;height:18px;display:inline-flex;align-items:center;padding:2px;background:{{ otherTrack }}"><span style="width:14px;height:14px;background:#0E1316;margin-left:{{ otherKnob }}"></span></span>
+          <span class="{{ otherToggleClass }}"><span class="cookie-toggle-knob"></span></span>
           Egyéb cookie-k
         </button>
         <span style="display:flex;gap:10px;flex-wrap:wrap">
@@ -609,8 +614,7 @@ class Component extends DCLogic {
       })),
       counter: ["0","2","3","0","1","3","5"],
       cookiesOpen: this.state.cookiesOpen,
-      otherTrack: this.state.otherCookies ? "#E4551F" : "rgba(237,231,221,0.35)",
-      otherKnob: this.state.otherCookies ? "16px" : "0px",
+      otherToggleClass: this.state.otherCookies ? "cookie-toggle is-on" : "cookie-toggle",
       toggleOther: () => this.setState(s => ({ otherCookies: !s.otherCookies })),
       openCookies: () => this.setState({ cookiesOpen: true }),
       acceptCookies: () => {
