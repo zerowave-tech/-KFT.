@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/", "destination": "/Szerelo%20Szerviz%20v2.dc.html" },
+    { "source": "/adatkezelesi-tajekoztato", "destination": "/Adatkezelesi%20tajekoztato.dc.html" },
+    { "source": "/garancialis-ugyintezes", "destination": "/Garancialis%20ugyintezes.dc.html" },
+    { "source": "/panaszkezeles", "destination": "/Panaszkezeles.dc.html" }
+  ]
+}
