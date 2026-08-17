@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Safety net for the user-agent rewrite in vercel.json: a phone that still
+  // lands on the desktop build at / gets the mobile one. Explicit URLs
+  // (/mobil, /desktop, the .dc.html files, local files) are left alone.
+  if (location.pathname === "/" && window.matchMedia("(max-width: 700px)").matches) {
+    location.replace("/mobil");
+  }
+</script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -43,7 +51,7 @@
 </style>
 </helmet>
 
-<div style="max-width:100%;overflow-x:hidden">
+<div style="max-width:100%;overflow-x:clip">
 
   <header style="position:sticky;top:0;z-index:40;background:rgba(14,19,22,0.86);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,231,221,0.14);padding:14px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
     <a href="#hero" style="display:flex;align-items:center;gap:13px;color:#EDE7DD">

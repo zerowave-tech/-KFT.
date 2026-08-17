@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800;900&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#0E1316; color:#EDE7DD; font-family:"IBM Plex Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  *, *::before, *::after { box-sizing:border-box; }
+  a { color:#E4551F; text-decoration:none; }
+  a:hover { color:#EDE7DD; }
+  html { scroll-behavior:smooth; }
+  @keyframes ticker { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+  /* menu button — state driven, cannot be expressed inline */
+  .menu-btn { background:transparent; border:1px solid rgba(237,231,221,0.35); }
+  .menu-btn.is-on { background:#E4551F; border-color:#E4551F; }
+  .menu-bar { width:16px; height:1.6px; background:#EDE7DD; display:block; }
+  .menu-btn.is-on .menu-bar { background:#0E1316; }
+  /* cookie toggle — state driven, cannot be expressed inline */
+  .cookie-toggle { width:34px; height:18px; display:inline-flex; align-items:center; padding:2px; flex:none; background:rgba(237,231,221,0.35); }
+  .cookie-toggle.is-on { background:#E4551F; }
+  .cookie-toggle-knob { width:14px; height:14px; background:#0E1316; margin-left:0; }
+  .cookie-toggle.is-on .cookie-toggle-knob { margin-left:16px; }
+</style>
+</helmet>
+
+<div style="max-width:520px;margin:0 auto;overflow-x:clip;position:relative">
+
+  <div style="background:#E4551F;color:#0E1316;padding:9px 18px;display:flex;justify-content:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase">
+    <span>Ügyelet · Hibabejelentés</span>
+  </div>
+
+  <header style="position:sticky;top:0;z-index:40;background:rgba(14,19,22,0.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,231,221,0.14);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <a href="#hero" style="display:flex;align-items:center;gap:10px;color:#EDE7DD">
+      <span style="width:30px;height:30px;background:#E4551F;display:grid;place-items:center;color:#0E1316;font-family:Archivo,sans-serif;font-weight:900;font-size:13px">É</span>
+      <span style="font-family:Archivo,sans-serif;font-weight:800;font-size:11.5px;letter-spacing:0.05em;line-height:1.2">ÉPÍTŐ SZERELŐ<br>SZERVIZ</span>
+    </a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <a href="tel:+36309775738" style="width:44px;height:44px;border:1px solid rgba(237,231,221,0.35);display:grid;place-items:center;color:#EDE7DD;font-family:'IBM Plex Mono',monospace;font-size:15px">☎</a>
+      <button type="button" onClick="{{ toggleMenu }}" aria-label="Menü" class="{{ menuBtnClass }}" style="width:44px;height:44px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;cursor:pointer;padding:0">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <nav style="position:sticky;top:69px;z-index:39;background:#0E1316;border-bottom:1px solid rgba(237,231,221,0.14);padding:10px 18px 22px;display:flex;flex-direction:column">
+      <sc-for list="{{ menuItems }}" as="m" hint-placeholder-count="6">
+        <a href="{{ m.href }}" onClick="{{ closeMenu }}" style="padding:15px 0;border-bottom:1px solid rgba(237,231,221,0.12);color:#EDE7DD;font-family:Archivo,sans-serif;font-weight:600;font-size:19px;display:flex;justify-content:space-between;align-items:center">
+          <span>{{ m.label }}</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#E4551F">{{ m.num }}</span>
+        </a>
+      </sc-for>
+      <a href="#kapcsolat" onClick="{{ closeMenu }}" style="margin-top:18px;background:#E4551F;color:#0E1316;text-align:center;padding:16px;font-family:Archivo,sans-serif;font-weight:600;font-size:13px;letter-spacing:0.08em;text-transform:uppercase">Hibabejelentés</a>
+    </nav>
+  </sc-if>
+
+  <section id="hero" style="position:relative;padding:44px 18px 0;overflow:hidden">
+    <div style="position:absolute;inset:0;z-index:0">
+      <svg viewBox="0 0 420 900" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;display:block;background:#0E1316">
+        <defs>
+          <pattern id="mgrid" width="34" height="34" patternUnits="userSpaceOnUse">
+            <path d="M34 0 H0 V34" fill="none" stroke="rgba(237,231,221,0.07)" stroke-width="1"></path>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="420" height="900" fill="url(#mgrid)"></rect>
+        <g fill="none" stroke="rgba(237,231,221,0.3)" stroke-width="1.5" stroke-linecap="square">
+          <rect x="70" y="470" width="176" height="230"></rect>
+          <path d="M70 504 H246 M70 666 H246"></path>
+          <rect x="102" y="538" width="112" height="90"></rect>
+          <path d="M126 562 h64 M126 586 h64 M126 610 h38"></path>
+          <path d="M100 700 v46 M216 700 v46 M76 746 h48 M192 746 h48"></path>
+          <path d="M246 560 H320 v-120" stroke-width="8" stroke="rgba(237,231,221,0.12)"></path>
+          <path d="M246 560 H320 v-120"></path>
+          <path d="M290 440 v-40 M320 440 v-40 M350 440 v-40" stroke="rgba(237,231,221,0.2)"></path>
+          <rect x="284" y="356" width="72" height="42"></rect>
+          <circle cx="176" cy="792" r="24"></circle>
+          <path d="M160 776 l32 32 M192 776 l-32 32"></path>
+          <path d="M0 830 H420" stroke="rgba(237,231,221,0.16)"></path>
+        </g>
+        <g fill="none" stroke="#E4551F" stroke-width="2.2" stroke-linecap="square" opacity="0.5">
+          <path d="M130 470 V404 h120"></path>
+          <circle cx="250" cy="404" r="8" fill="#E4551F" stroke="none"></circle>
+          <circle cx="300" cy="640" r="26"></circle>
+          <path d="M300 622 v18 h16"></path>
+        </g>
+      </svg>
+    </div>
+    <div style="position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(14,19,22,0.9) 0%,rgba(14,19,22,0.62) 46%,rgba(14,19,22,0.95) 100%)"></div>
+    <div style="position:relative;z-index:2">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:#E4551F;text-transform:uppercase;margin-bottom:18px;line-height:1.7">Márkaszerviz · beüzemelés<br>karbantartás</div>
+      <h1 style="font-family:Archivo,sans-serif;font-weight:900;font-size:clamp(40px,13vw,58px);line-height:0.92;letter-spacing:-0.03em;margin:0 0 20px;text-transform:uppercase">Gázkészülék<br>szerviz</h1>
+      <p style="font-size:16px;line-height:1.55;color:rgba(237,231,221,0.78);margin:0 0 28px">Ariston, Immergas, Wolf, Ferroli, Westen, Baxi, Fég, Riello, Biasi, Bosch, Viessmann, Sime, Beretta, Quadriga készülékek szakszervize Budapesten és Pest megyében.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:44px">
+        <a href="#kapcsolat" style="background:#E4551F;color:#0E1316;padding:17px 20px;text-align:center;font-family:Archivo,sans-serif;font-weight:600;font-size:13.5px;letter-spacing:0.08em;text-transform:uppercase">Online hibabejelentő</a>
+        <a href="tel:+36309775738" style="border:1px solid rgba(237,231,221,0.4);color:#EDE7DD;padding:17px 20px;text-align:center;font-family:Archivo,sans-serif;font-weight:600;font-size:13.5px;letter-spacing:0.08em;text-transform:uppercase">+36 30 9775 738</a>
+      </div>
+    </div>
+    <div data-reveal-group="up" style="position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(237,231,221,0.18)">
+      <div style="padding:20px 16px 22px 0;border-right:1px solid rgba(237,231,221,0.18)">
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;line-height:1">14</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.55);text-transform:uppercase;margin-top:6px">Szervizelt márka</div>
+      </div>
+      <div style="padding:20px 0 22px 16px">
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;line-height:1">23</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.55);text-transform:uppercase;margin-top:6px">Budapesti kerület</div>
+      </div>
+      <div style="padding:20px 16px 24px 0;border-top:1px solid rgba(237,231,221,0.18);border-right:1px solid rgba(237,231,221,0.18)">
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;line-height:1">24</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.55);text-transform:uppercase;margin-top:6px">Pest megyei település</div>
+      </div>
+      <div style="padding:20px 0 24px 16px;border-top:1px solid rgba(237,231,221,0.18)">
+        <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px;line-height:1">Ipari</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.55);text-transform:uppercase;margin-top:6px">Kazán szerviz is</div>
+      </div>
+    </div>
+  </section>
+
+  <div style="border-top:1px solid rgba(237,231,221,0.14);border-bottom:1px solid rgba(237,231,221,0.14);padding:16px 0;overflow:hidden;white-space:nowrap">
+    <div style="display:inline-flex;gap:30px;animation:ticker 30s linear infinite;font-family:Archivo,sans-serif;font-weight:800;font-size:19px;letter-spacing:0.02em;text-transform:uppercase;color:rgba(237,231,221,0.32);padding-right:30px">
+      <sc-for list="{{ tickerBrands }}" as="t" hint-placeholder-count="14">
+        <span>{{ t }}</span>
+      </sc-for>
+    </div>
+  </div>
+
+  <section style="background:#EDE7DD;color:#0E1316;padding:56px 18px">
+    <div data-reveal="left" style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:#B0472A;text-transform:uppercase;margin-bottom:24px">01 — Bemutatkozás</div>
+    <p data-reveal="left" style="font-family:Archivo,sans-serif;font-weight:500;font-size:26px;line-height:1.2;letter-spacing:-0.02em;margin:0 0 26px;text-wrap:pretty">Épületgépészeti kivitelezés és gázkészülék szerviz egy kézből — beüzemeléstől a garanciális javításon át a kazáncseréig.</p>
+    <a href="#szolgaltatasok" style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid #B0472A;padding-bottom:4px;color:#B0472A">Szolgáltatások →</a>
+  </section>
+
+  <section id="szolgaltatasok" style="padding:56px 18px 0">
+    <div data-reveal="up" style="margin-bottom:28px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:rgba(237,231,221,0.5);text-transform:uppercase;margin-bottom:12px">02 — Amit vállalunk</div>
+      <h2 style="font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(28px,8vw,36px);letter-spacing:-0.03em;margin:0;text-transform:uppercase">Szolgáltatások</h2>
+    </div>
+    <div data-reveal-group="left" style="border-top:1px solid rgba(237,231,221,0.18)">
+      <sc-for list="{{ services }}" as="s" hint-placeholder-count="5">
+        <a href="#kapcsolat" style="display:block;padding:22px 0;border-bottom:1px solid rgba(237,231,221,0.18);color:#EDE7DD">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#E4551F;margin-bottom:8px">{{ s.num }}</div>
+          <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:23px;line-height:1.12;letter-spacing:-0.02em;margin-bottom:8px">{{ s.title }}</div>
+          <div style="font-size:14.5px;line-height:1.55;color:rgba(237,231,221,0.62)">{{ s.desc }}</div>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="padding:44px 18px 0">
+    <div style="position:relative;height:190px">
+      <svg id="mSchematic" viewBox="0 0 420 190" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block;background:#12191D">
+        <defs>
+          <pattern id="mgrid2" width="26" height="26" patternUnits="userSpaceOnUse">
+            <path d="M26 0 H0 V26" fill="none" stroke="rgba(237,231,221,0.06)" stroke-width="1"></path>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="420" height="190" fill="url(#mgrid2)"></rect>
+        <g fill="none" stroke="rgba(237,231,221,0.3)" stroke-width="1.4" stroke-linecap="square">
+          <path d="M0 160 H420" stroke="rgba(237,231,221,0.16)"></path>
+          <rect x="26" y="52" width="70" height="90"></rect>
+          <path d="M26 66 H96 M26 126 H96"></path>
+          <rect x="40" y="80" width="42" height="34"></rect>
+          <path d="M96 96 H150"></path>
+          <circle cx="166" cy="96" r="14"></circle>
+          <path d="M156 86 l20 20 M176 86 l-20 20"></path>
+          <path d="M182 96 H228"></path>
+          <rect x="228" y="62" width="44" height="70" rx="22"></rect>
+          <path d="M250 62 v-18 h-22"></path>
+          <path d="M272 96 H316"></path>
+          <rect x="316" y="46" width="56" height="96"></rect>
+          <path d="M316 64 H372 M316 124 H372"></path>
+          <path d="M372 70 H400 V30"></path>
+          <rect x="382" y="14" width="36" height="16"></rect>
+        </g>
+        <g fill="none" stroke="#E4551F" stroke-width="2" stroke-linecap="square">
+          <path d="M60 52 V26 h84"></path>
+          <circle cx="144" cy="26" r="6" fill="#E4551F" stroke="none"></circle>
+          <path d="M250 132 v28 h64"></path>
+          <circle cx="336" cy="160" r="14"></circle>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section id="markak" style="padding:56px 18px">
+    <div data-reveal="up" style="margin-bottom:28px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:rgba(237,231,221,0.5);text-transform:uppercase;margin-bottom:12px">03 — 14 márka</div>
+      <h2 style="font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(28px,8vw,36px);letter-spacing:-0.03em;margin:0;text-transform:uppercase">Márkaszerviz</h2>
+    </div>
+    <div data-reveal-group="right" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(237,231,221,0.18);border:1px solid rgba(237,231,221,0.18)">
+      <sc-for list="{{ brands }}" as="b" hint-placeholder-count="14">
+        <a href="#kapcsolat" style="background:#0E1316;color:#EDE7DD;padding:18px 14px 20px;display:block;min-height:118px" style-active="background:#E4551F;color:#0E1316">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.12em;opacity:0.55;margin-bottom:14px">{{ b.num }}</div>
+          <div style="font-family:Archivo,sans-serif;font-weight:800;font-size:17px;letter-spacing:-0.02em;text-transform:uppercase;margin-bottom:6px">{{ b.name }}</div>
+          <div style="font-size:11.5px;line-height:1.45;opacity:0.6">{{ b.desc }}</div>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="folyamat" style="background:#EDE7DD;color:#0E1316;padding:56px 18px">
+    <div data-reveal="up" style="margin-bottom:28px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:#B0472A;text-transform:uppercase;margin-bottom:12px">04 — Hogyan dolgozunk</div>
+      <h2 style="font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(28px,8vw,36px);letter-spacing:-0.03em;margin:0;text-transform:uppercase">Üzemeltetés</h2>
+    </div>
+    <div data-reveal-group="left" style="display:grid;grid-template-columns:1fr;gap:1px;background:#CFC7BA;border:1px solid #CFC7BA">
+      <sc-for list="{{ ops }}" as="o" hint-placeholder-count="6">
+        <div style="background:#EDE7DD;padding:22px 18px">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.12em;color:#B0472A;margin-bottom:12px">{{ o.num }}</div>
+          <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:19px;line-height:1.2;letter-spacing:-0.015em;margin-bottom:8px">{{ o.title }}</div>
+          <div style="font-size:14px;line-height:1.55;color:#5B6165">{{ o.desc }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:32px;border-top:1px solid #CFC7BA;padding-top:26px">
+      <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:20px;letter-spacing:-0.02em;margin-bottom:16px">Beüzemelés megrendelő űrlapok</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ orderBrands }}" as="ob" hint-placeholder-count="6">
+          <a href="#kapcsolat" style="border:1px solid #0E1316;color:#0E1316;padding:11px 14px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em">{{ ob }}</a>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="terulet" style="padding:56px 18px">
+    <div data-reveal="up" style="margin-bottom:14px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:rgba(237,231,221,0.5);text-transform:uppercase;margin-bottom:12px">05 — Budapest &amp; Pest megye</div>
+      <h2 style="font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(26px,7.4vw,34px);letter-spacing:-0.03em;margin:0;text-transform:uppercase">Tevékenységi terület</h2>
+    </div>
+    <p style="font-size:15px;color:rgba(237,231,221,0.6);margin:0 0 32px">Gázkészülék szervizünk tevékenységi területei Budapesten, Pest megyében.</p>
+    <div data-reveal="left" style="margin-bottom:32px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#E4551F;text-transform:uppercase;margin-bottom:14px">Budapest kerületei</div>
+      <div style="font-family:Archivo,sans-serif;font-weight:500;font-size:17px;line-height:1.7;letter-spacing:0.03em;color:rgba(237,231,221,0.86)">I. II. III. IV. V. VI. VII. VIII. IX. X. XI. XII. XIII. XIV. XV. XVI. XVII. XVIII. XIX. XX. XXI. XXII. XXIII.</div>
+    </div>
+    <div data-reveal="right">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;color:#E4551F;text-transform:uppercase;margin-bottom:14px">Pest megye</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <sc-for list="{{ towns }}" as="t" hint-placeholder-count="24">
+          <span style="border:1px solid rgba(237,231,221,0.22);padding:8px 12px;font-size:13px;color:rgba(237,231,221,0.82)">{{ t }}</span>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="kerdesek" style="padding:0 18px 56px">
+    <div style="border-top:1px solid rgba(237,231,221,0.18);padding-top:44px">
+      <div data-reveal="left" style="margin-bottom:26px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;color:#E4551F;text-transform:uppercase;margin-bottom:12px">06 — Információk</div>
+        <h2 style="font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(26px,7.4vw,34px);line-height:1.04;letter-spacing:-0.03em;margin:0 0 14px;text-transform:uppercase">Gyakori kérdések</h2>
+        <p style="font-size:15px;line-height:1.6;color:rgba(237,231,221,0.6);margin:0">Garanciális ügyintézés, panaszkezelés, alkatrészrendelés beszereléssel. További kérdés esetén hívjon minket.</p>
+      </div>
+      <div style="border-top:1px solid rgba(237,231,221,0.18)">
+        <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+          <div style="border-bottom:1px solid rgba(237,231,221,0.18)">
+            <button type="button" onClick="{{ f.toggle }}" style="width:100%;background:none;border:0;padding:20px 0;display:flex;gap:14px;align-items:flex-start;text-align:left;color:#EDE7DD;cursor:pointer;font-family:Archivo,sans-serif;font-weight:600;font-size:17px;line-height:1.25;letter-spacing:-0.015em">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#E4551F;min-width:22px;padding-top:4px">{{ f.num }}</span>
+              <span style="flex:1">{{ f.q }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:17px;color:#E4551F;padding-top:1px">{{ f.sign }}</span>
+            </button>
+            <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 0 22px 36px;font-size:15px;line-height:1.65;color:rgba(237,231,221,0.66)">{{ f.a }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="kapcsolat" style="background:#E4551F;color:#0E1316;padding:56px 18px">
+    <div data-reveal="left">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:18px">07 — Kapcsolat</div>
+      <h2 style="font-family:Archivo,sans-serif;font-weight:900;font-size:clamp(32px,9.5vw,44px);line-height:0.96;letter-spacing:-0.03em;margin:0 0 20px;text-transform:uppercase">Hibabejelentés és időpont</h2>
+      <p style="font-size:16px;line-height:1.55;margin:0 0 26px">Írja meg a készülék márkáját és a hibajelenséget, vagy hívjon minket közvetlenül.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;font-family:Archivo,sans-serif;font-weight:600;font-size:19px;letter-spacing:-0.01em;word-break:break-word;margin-bottom:32px">
+        <a href="tel:+36309775738" style="color:#0E1316">+36 30 9775 738</a>
+        <a href="mailto:szerviz.epszer@gmail.com" style="color:#0E1316">szerviz.epszer@gmail.com</a>
+        <span>1202 Budapest, Rimaszombat u</span>
+      </div>
+    </div>
+    <div data-reveal="right" style="background:#0E1316;color:#EDE7DD;padding:24px 20px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(237,231,221,0.55);margin-bottom:20px">Online hibabejelentő</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <input placeholder="Név" style="background:none;border:0;border-bottom:1px solid rgba(237,231,221,0.3);padding:12px 2px;color:#EDE7DD;font-family:'IBM Plex Sans',sans-serif;font-size:16px;outline:none">
+        <input placeholder="Telefonszám" style="background:none;border:0;border-bottom:1px solid rgba(237,231,221,0.3);padding:12px 2px;color:#EDE7DD;font-family:'IBM Plex Sans',sans-serif;font-size:16px;outline:none">
+        <input placeholder="Készülék márkája és típusa" style="background:none;border:0;border-bottom:1px solid rgba(237,231,221,0.3);padding:12px 2px;color:#EDE7DD;font-family:'IBM Plex Sans',sans-serif;font-size:16px;outline:none">
+        <textarea placeholder="Hibajelenség" rows="1" style="background:none;border:0;border-bottom:1px solid rgba(237,231,221,0.3);padding:12px 2px;box-sizing:border-box;color:#EDE7DD;font-family:'IBM Plex Sans',sans-serif;font-size:16px;line-height:1.4;outline:none;resize:vertical;min-height:44px"></textarea>
+        <button type="button" onClick="{{ submit }}" style="margin-top:8px;background:#E4551F;color:#0E1316;border:0;padding:17px 20px;font-family:Archivo,sans-serif;font-weight:600;font-size:13.5px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer">{{ submitLabel }}</button>
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:44px 18px 90px;border-top:1px solid rgba(237,231,221,0.14)">
+    <div style="font-family:Archivo,sans-serif;font-weight:900;font-size:28px;line-height:1.04;letter-spacing:-0.03em;text-transform:uppercase;margin-bottom:32px">Épitő Szerelő<br>Szerviz Kft</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;padding-bottom:32px">
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;color:rgba(237,231,221,0.45);text-transform:uppercase;margin-bottom:2px">Oldaltérkép</div>
+        <a href="#hero" style="color:#EDE7DD">Nyitóoldal</a>
+        <a href="#szolgaltatasok" style="color:#EDE7DD">Klíma szerelés</a>
+        <a href="#folyamat" style="color:#EDE7DD">Karbantartás</a>
+        <a href="#markak" style="color:#EDE7DD">Márkaszerviz</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.14em;color:rgba(237,231,221,0.45);text-transform:uppercase;margin-bottom:2px">Információk</div>
+        <a href="./Garancialis ugyintezes.dc.html" style="color:#EDE7DD">Garanciális ügyintézés</a>
+        <a href="./Panaszkezeles.dc.html" style="color:#EDE7DD">Panaszkezelés</a>
+        <a href="./Adatkezelesi tajekoztato.dc.html" style="color:#EDE7DD">Adatkezelés</a>
+        <a href="#kapcsolat" style="color:#EDE7DD">Kapcsolat</a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(237,231,221,0.14);padding-top:22px;display:flex;flex-direction:column;gap:16px">
+      <button type="button" onClick="{{ openCookies }}" style="background:none;border:0;padding:0;color:rgba(237,231,221,0.62);font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;cursor:pointer;text-decoration:underline;align-self:flex-start">Adatkezelési beállítások</button>
+      <div style="display:flex;gap:10px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.4);text-transform:uppercase">
+        <span>Látogató</span>
+        <span style="display:flex;gap:3px">
+          <sc-for list="{{ counter }}" as="d" hint-placeholder-count="7">
+            <span style="border:1px solid rgba(237,231,221,0.22);padding:3px 5px;color:rgba(237,231,221,0.7)">{{ d }}</span>
+          </sc-for>
+        </span>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.1em;color:rgba(237,231,221,0.45);text-transform:uppercase;line-height:1.7">Épitő Szerelő Szerviz Kft<br>szerelo-szerviz.hu</div>
+    </div>
+  </footer>
+
+  <div style="position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;background:#0E1316;border-top:1px solid rgba(237,231,221,0.2)">
+    <a href="tel:+36309775738" style="padding:16px;text-align:center;color:#EDE7DD;font-family:Archivo,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;border-right:1px solid rgba(237,231,221,0.2)">Hívás</a>
+    <a href="#kapcsolat" style="padding:16px;text-align:center;background:#E4551F;color:#0E1316;font-family:Archivo,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase">Hibabejelentés</a>
+  </div>
+
+  <sc-if value="{{ cookiesOpen }}" hint-placeholder-val="{{ true }}">
+    <div style="position:fixed;left:0;right:0;bottom:0;z-index:60;max-width:520px;margin:0 auto;background:#0E1316;border-top:1px solid rgba(237,231,221,0.2);padding:22px 18px;box-shadow:0 -20px 60px rgba(0,0,0,0.5)">
+      <div style="font-family:Archivo,sans-serif;font-weight:600;font-size:17px;margin-bottom:8px">Adatkezelési beállítások</div>
+      <p style="font-size:13.5px;line-height:1.6;color:rgba(237,231,221,0.66);margin:0 0 18px">Weboldalunk az alapvető működéshez szükséges cookie-kat használ. Szélesebb körű funkcionalitáshoz (marketing, statisztika, személyre szabás) egyéb cookie-kat engedélyezhet. Részletesebb információkat az <a href="./Adatkezelesi tajekoztato.dc.html">Adatkezelési tájékoztató</a>ban talál.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">
+        <span style="display:flex;gap:10px;align-items:center;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(237,231,221,0.5)">
+          <span style="width:34px;height:18px;background:rgba(237,231,221,0.35);display:inline-flex;align-items:center;padding:2px;flex:none"><span style="width:14px;height:14px;background:#EDE7DD;margin-left:16px"></span></span>
+          Működéshez szükséges cookie-k
+        </span>
+        <button type="button" onClick="{{ toggleOther }}" style="display:flex;gap:10px;align-items:center;background:none;border:0;padding:0;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#EDE7DD">
+          <span class="{{ otherToggleClass }}"><span class="cookie-toggle-knob"></span></span>
+          Egyéb cookie-k
+        </button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button type="button" onClick="{{ rejectCookies }}" style="background:none;color:#EDE7DD;border:1px solid rgba(237,231,221,0.4);padding:15px 12px;font-family:Archivo,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer">Elutasítom</button>
+        <button type="button" onClick="{{ acceptCookies }}" style="background:#E4551F;color:#0E1316;border:0;padding:15px 12px;font-family:Archivo,sans-serif;font-weight:600;font-size:12.5px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer">Elfogadom</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+class Component extends DCLogic {
+  state = { openFaq: -1, sent: false, cookiesOpen: false, otherCookies: false, menuOpen: false };
+
+  componentDidMount() {
+    try {
+      if (localStorage.getItem("esz-cookie-consent") !== "1") this.setState({ cookiesOpen: true });
+    } catch (err) { this.setState({ cookiesOpen: true }); }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    this.drawSchematic();
+    const EASE = "cubic-bezier(0.16,0.84,0.24,1)";
+    const hide = (el, dir, delay) => {
+      const off = dir === "left" ? "translate3d(-40px,0,0)" : dir === "right" ? "translate3d(40px,0,0)" : "translate3d(0,28px,0)";
+      el.style.opacity = "0";
+      el.style.transform = off;
+      el.style.transition = `opacity 0.7s ${EASE} ${delay}ms, transform 0.8s ${EASE} ${delay}ms`;
+    };
+    const targets = [], meta = new Map();
+    document.querySelectorAll("[data-reveal]").forEach(el => {
+      const dir = el.getAttribute("data-reveal");
+      meta.set(el, { dir, delay: 0 });
+      hide(el, dir, 0);
+      targets.push(el);
+    });
+    document.querySelectorAll("[data-reveal-group]").forEach(group => {
+      const dir = group.getAttribute("data-reveal-group");
+      Array.from(group.children).forEach((child, i) => {
+        const delay = Math.min(i, 10) * 70;
+        meta.set(child, { dir, delay });
+        hide(child, dir, delay);
+        targets.push(child);
+      });
+    });
+    const show = el => { el.style.opacity = "1"; el.style.transform = "translate3d(0,0,0)"; };
+    this._io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        const m = meta.get(e.target);
+        if (e.isIntersecting) show(e.target);
+        else if (m) hide(e.target, m.dir, m.delay);
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
+    targets.forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.9) show(el);
+      this._io.observe(el);
+    });
+  }
+
+  drawSchematic() {
+    const svg = document.getElementById("mSchematic");
+    if (!svg) return;
+    const items = Array.from(svg.querySelectorAll("path, rect, circle")).map(el => {
+      let len = 0;
+      try { len = el.getTotalLength(); } catch (err) { len = 0; }
+      let x = 0;
+      try { x = el.getBBox().x; } catch (err) { x = 0; }
+      return { el, len, x, solid: el.getAttribute("stroke") === "none" };
+    }).sort((a, b) => a.x - b.x);
+    const reset = () => items.forEach(it => {
+      const delay = Math.round((it.x / 420) * 700);
+      if (it.solid || !it.len) {
+        it.el.style.opacity = "0";
+        it.el.style.transition = `opacity 0.45s ease ${delay + 200}ms`;
+      } else {
+        it.el.style.strokeDasharray = it.len;
+        it.el.style.strokeDashoffset = it.len;
+        it.el.style.transition = `stroke-dashoffset 0.75s cubic-bezier(0.22,0.75,0.2,1) ${delay}ms`;
+      }
+    });
+    const play = () => items.forEach(it => {
+      if (it.solid || !it.len) it.el.style.opacity = "1";
+      else it.el.style.strokeDashoffset = "0";
+    });
+    reset();
+    this._ioDraw = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? play() : reset()), { threshold: 0.25 });
+    this._ioDraw.observe(svg);
+  }
+
+  componentWillUnmount() {
+    if (this._io) this._io.disconnect();
+    if (this._ioDraw) this._ioDraw.disconnect();
+  }
+
+  renderVals() {
+    const brandData = [
+      ["Ariston", "beüzemelés · karbantartás"],
+      ["Bosch", "partner szerviz · javítás"],
+      ["Wolf", "beüzemelés · szakszerviz"],
+      ["Ferroli", "márkaszerviz · javítás"],
+      ["Westen", "javítás · kazáncsere"],
+      ["Immergas", "alkatrész · hibafeltárás"],
+      ["Viessmann", "garanciális javítás"],
+      ["Baxi", "karbantartás · javítás"],
+      ["Riello", "kazán beüzemelés"],
+      ["Fég", "szerviz · szerelő"],
+      ["Sime", "kazán szerviz"],
+      ["Quadriga", "beüzemelés · szakszerviz"],
+      ["Biasi", "márkaszerviz · javítás"],
+      ["Ipari kazán", "ipari kazán szerviz"]
+    ];
+    const faqData = [
+      ["Milyen készülékeket szervizelnek?", "Ariston, Bosch, Wolf, Ferroli, Westen, Immergas, Viessmann, Baxi, Riello, Fég, Sime, Quadriga és Biasi gázkészülékeket, valamint ipari kazánokat."],
+      ["Hol dolgoznak?", "Budapest mind a 23 kerületében, valamint Pest megye 24 településén — Dunakeszitől Biatorbágyig."],
+      ["Hogyan tudok beüzemelést rendelni?", "A beüzemelés megrendelő űrlapokon keresztül, márkánként: Bosch, Westen, Ariston, Viessmann, Wolf, Beretta."],
+      ["Mit tartalmaz a karbantartás?", "Gázkészülék tisztítás, ellenőrzés és felülvizsgálat, szükség esetén szénmonoxid visszaáramlás ellenőrzése és gázszivárgás mérés."],
+      ["Van garanciális ügyintézés?", "Igen. Garanciális ügyintézést és panaszkezelést is vállalunk, a vonatkozó jogszabályok szerint."],
+      ["Rendelhetek alkatrészt?", "Igen, gázkészülék alkatrész beszereléssel is rendelhető."]
+    ];
+    const open = this.state.menuOpen;
+    return {
+      menuOpen: open,
+      menuBtnClass: open ? "menu-btn is-on" : "menu-btn",
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+      menuItems: [
+        { label: "Szolgáltatások", href: "#szolgaltatasok", num: "02" },
+        { label: "Márkaszerviz", href: "#markak", num: "03" },
+        { label: "Üzemeltetés", href: "#folyamat", num: "04" },
+        { label: "Tevékenységi terület", href: "#terulet", num: "05" },
+        { label: "Gyakori kérdések", href: "#kerdesek", num: "06" },
+        { label: "Kapcsolat", href: "#kapcsolat", num: "07" }
+      ],
+      tickerBrands: ["Ariston","Immergas","Wolf","Ferroli","Westen","Baxi","Fég","Riello","Biasi","Bosch","Viessmann","Sime","Beretta","Quadriga","Ariston","Immergas","Wolf","Ferroli","Westen","Baxi","Fég","Riello","Biasi","Bosch","Viessmann","Sime","Beretta","Quadriga"],
+      brands: brandData.map((b, i) => ({ num: String(i + 1).padStart(2, "0"), name: b[0], desc: b[1] })),
+      services: [
+        { num: "01", title: "Kazáncsere", desc: "Kondenzációs kazán szerelés, csere, tervezés, kéménybélelés, engedélyeztetés." },
+        { num: "02", title: "Egyszerűsített kazáncsere", desc: "Egyszerűsített gázkészülék csere: Wolf, Ariston, Immergas, Westen, Sime, Fég." },
+        { num: "03", title: "Klíma szerelés", desc: "Telepítés és Bosch klíma márkaszerviz. Klíma vásárlási szabályok és szerelési tudnivalók." },
+        { num: "04", title: "Fűtés tisztítás", desc: "Fűtésrendszer átmosás, vegyszeres tisztítás." },
+        { num: "05", title: "Alkatrészrendelés", desc: "Gázkészülék alkatrész beszereléssel." }
+      ],
+      ops: [
+        { num: "01", title: "Ügyfélszolgálat · Hibabejelentés · Ügyelet", desc: "Ariston, Immergas, Westen, Ferroli, Fég, Wolf készülékek." },
+        { num: "02", title: "Online hibabejelentő", desc: "Fég, Quadriga, Ariston, Ferroli, Westen, Wolf, Immergas, Rendamax, Sime." },
+        { num: "03", title: "Gázkészülék karbantartás", desc: "Tisztítás, ellenőrzés, felülvizsgálat." },
+        { num: "04", title: "On-line karbantartás igénylő űrlap", desc: "Ariston, Immergas, Westen, Ferroli, Bosch, Beretta, Baxi, Riello, Wolf, Sime." },
+        { num: "05", title: "Szénmonoxid visszaáramlás ellenőrzése", desc: "Gázkészüléken végzett biztonsági ellenőrzés." },
+        { num: "06", title: "Gázszivárgás mérés", desc: "Feltárás, mérés, ellenőrzés, elhárítás fogyasztói gázvezetéken és gázkészülékeken." }
+      ],
+      orderBrands: ["BOSCH", "WESTEN", "ARISTON", "VIESSMANN", "WOLF", "BERETTA"],
+      towns: ["Dunakeszi","Fót","Kerepes","Kistarcsa","Csömör","Nagytarcsa","Pécel","Maglód","Gyömrő","Vecsés","Felsőpakony","Monor","Alsónémedi","Üllő","Gyál","Dunaharaszti","Szigetszentmiklós","Tököl","Dunavarsány","Diósd","Érd","Tárnok","Budakeszi","Biatorbágy"],
+      faqs: faqData.map((f, i) => ({
+        num: String(i + 1).padStart(2, "0"),
+        q: f[0],
+        a: f[1],
+        open: this.state.openFaq === i,
+        sign: this.state.openFaq === i ? "−" : "+",
+        toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? -1 : i }))
+      })),
+      counter: ["0","2","3","0","1","3","5"],
+      cookiesOpen: this.state.cookiesOpen,
+      otherToggleClass: this.state.otherCookies ? "cookie-toggle is-on" : "cookie-toggle",
+      toggleOther: () => this.setState(s => ({ otherCookies: !s.otherCookies })),
+      openCookies: () => this.setState({ cookiesOpen: true }),
+      acceptCookies: () => {
+        try { localStorage.setItem("esz-cookie-consent", "1"); } catch (err) {}
+        this.setState({ cookiesOpen: false });
+      },
+      rejectCookies: () => {
+        try { localStorage.setItem("esz-cookie-consent", "1"); } catch (err) {}
+        this.setState({ cookiesOpen: false, otherCookies: false });
+      },
+      submitLabel: this.state.sent ? "Köszönjük, felvesszük a kapcsolatot" : "Bejelentés elküldése",
+      submit: () => this.setState({ sent: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
