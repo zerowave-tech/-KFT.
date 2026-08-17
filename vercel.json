@@ -1,9 +1,31 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(iPhone|iPod|Android.*Mobile|Windows Phone|IEMobile|BlackBerry|Opera Mini).*"
+        }
+      ],
+      "destination": "/Szerelo%20Szerviz%20mobil.dc.html"
+    },
     { "source": "/", "destination": "/Szerelo%20Szerviz%20v2.dc.html" },
+    { "source": "/mobil", "destination": "/Szerelo%20Szerviz%20mobil.dc.html" },
+    { "source": "/desktop", "destination": "/Szerelo%20Szerviz%20v2.dc.html" },
     { "source": "/adatkezelesi-tajekoztato", "destination": "/Adatkezelesi%20tajekoztato.dc.html" },
     { "source": "/garancialis-ugyintezes", "destination": "/Garancialis%20ugyintezes.dc.html" },
     { "source": "/panaszkezeles", "destination": "/Panaszkezeles.dc.html" }
+  ],
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Vary", "value": "User-Agent" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }
